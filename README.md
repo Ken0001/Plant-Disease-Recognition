@@ -1,7 +1,7 @@
 # Plant-Disease-Recognition
-:::info
+```
 Use deep learning based method to recognition disease on pomelo
-:::
+```
 
 ## Dataset
 1. Plant-Village
