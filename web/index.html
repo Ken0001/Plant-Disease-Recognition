@@ -1,0 +1,66 @@
+<html>
+
+<head>
+    <link rel=stylesheet type="text/css" href="main.css?2003220831">
+    <meta charset="UTF-8">
+    <title>植物病蟲害辨識系統</title>
+    <link href="https://fonts.googleapis.com/css?family=Noto+Sans+TC&display=swap" rel="stylesheet">
+    <meta name="viewport" content="width=device-width, user-scalable=no">
+    <link rel="icon" type="image/png" href="https://imgur.com/TIE6Hcl.png">
+    <!-- Compiled and minified CSS -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
+
+    <!-- Compiled and minified JavaScript -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=Noto+Serif+TC&display=swap" rel="stylesheet">
+</head>
+
+<body>
+    <div class="full">
+        <main>
+            <h3 class="top_title">柚子疾病辨識系統</h3>
+
+            <!-- Upload  -->
+            <form id="file-upload-form" class="uploader" method="POST" enctype="multipart/form-data"
+                action="http://134.208.3.54:7788/">
+                <input id="file-upload" type="file" name="file" accept="image/*" />
+                <label for="file-upload" id="file-drag">
+                    <img id="file-image" src="#" alt="Preview" class="hidden">
+                    <div id="start">
+                        <i class="material-icons large">cloud_upload</i>
+                        <div>上傳圖片</div>
+                        <div id="notimage" class="hidden">Please select an image</div>
+                        <span id="file-upload-btn" class="btn btn-primary waves-effect">選擇檔案</span>
+                    </div>
+                    <div id="response" class="hidden">
+                        <div id="messages"></div>
+                        <progress class="progress" id="file-progress" value="0">
+                            <span>0</span>%
+                        </progress></br>
+                        <button class="waves-effect waves-light btn modal-trigger" data-target="modal1">顯示結果</button>
+                    </div>
+                </label>
+            </form>
+            <!-- Modal Trigger 
+            <a class="waves-effect waves-light btn modal-trigger" href="#modal1">Modal</a>-->
+
+            <!-- Modal Structure -->
+            <div id="modal1" class="modal">
+                <div class="modal-content" id="result">
+
+                </div>
+                <!--<div class="modal-footer">
+                    <a href="#!" class="modal-close waves-effect waves-green btn-flat">好的</a>
+                </div>-->
+            </div>
+        </main>
+        <script src="//ajax.googleapis.com/ajax/libs/jquery/1.8.2/jquery.min.js"></script>
+        <script type="text/javascript" src="main.js" charset="UTF-8"></script>
+        <footer>
+            <p>&copy; 2020 <b>Ken</b></p>
+        </footer>
+    </div>
+</body>
+
+</html>
