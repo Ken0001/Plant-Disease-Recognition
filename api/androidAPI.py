@@ -10,13 +10,17 @@ import tensorflow as tf
 from keras.models import load_model
 from func import loadImg, toPanda
 
+# Image
+from PIL import Image
 
-ALLOWED_EXTENSIONS = set(['png', 'jpg', 'jpeg', 'gif'])
+
+ALLOWED_EXTENSIONS = set(['png', 'jpg', 'JPG', 'jpeg', 'gif', 'HEIC'])
 
 app = Flask(__name__)
 app.config['UPLOAD_FOLDER'] = os.getcwd()+"/upload_img"
 app.config['MAX_CONTENT_LENGTH'] = 16 * 1024 * 1024
 
+# GPU 用的
 
 # 自動增長 GPU 記憶體用量
 gpu_options = tf.GPUOptions(allow_growth=True)
@@ -34,6 +38,56 @@ def loadModel():
     model = load_model("densenet.h5")
     graph = tf.get_default_graph()
 
+def load_image_file(file, mode='RGB', size=None):
+    # Load the image with PIL
+    img = Image.open(file)
+    img = exif_transpose(img)
+    img = img.convert(mode)
+    if size:
+        if type(size) is not tuple:
+            print("Wrong type of size")
+        else:
+            img = img.resize(size)
+    return img
+
+def exif_transpose(img):
+    if not img:
+        return img
+
+    exif_orientation_tag = 274
+    # Check for EXIF data (only present on some files)
+    if hasattr(img, "_getexif") and isinstance(img._getexif(), dict) and exif_orientation_tag in img._getexif():
+        exif_data = img._getexif()
+        orientation = exif_data[exif_orientation_tag]
+
+        # Handle EXIF Orientation
+        if orientation == 1:
+            # Normal image - nothing to do!
+            pass
+        elif orientation == 2:
+            # Mirrored left to right
+            img = img.transpose(Image.FLIP_LEFT_RIGHT)
+        elif orientation == 3:
+            # Rotated 180 degrees
+            img = img.rotate(180)
+        elif orientation == 4:
+            # Mirrored top to bottom
+            img = img.rotate(180).transpose(Image.FLIP_LEFT_RIGHT)
+        elif orientation == 5:
+            # Mirrored along top-left diagonal
+            img = img.rotate(-90, expand=True).transpose(Image.FLIP_LEFT_RIGHT)
+        elif orientation == 6:
+            # Rotated 90 degrees
+            img = img.rotate(-90, expand=True)
+        elif orientation == 7:
+            # Mirrored along top-right diagonal
+            img = img.rotate(90, expand=True).transpose(Image.FLIP_LEFT_RIGHT)
+        elif orientation == 8:
+            # Rotated 270 degrees
+            img = img.rotate(90, expand=True)
+
+    return img
+
 def makeResult(r):
     result = "辨識結果:  "+ str(r.Prediction) + ",\
         黑點病:"+ str(round(r.Black[0]*100,4)) + "%,\
@@ -48,6 +102,7 @@ def makeResult(r):
 辨識結果:xxx,黑點病:xxx,...
 
 JAVA: split with ","
+這裡是網頁用的
 """
 def make_html_result(r):
     html = '''
@@ -110,15 +165,22 @@ def api():
         if file and allowed_file(file.filename):
             filename = secure_filename(file.filename)
             file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
-            image = os.path.join(app.config['UPLOAD_FOLDER'], filename)
-            img = loadImg(image)
+            imgPath = os.path.join(app.config['UPLOAD_FOLDER'], filename)
+            
+            #img = loadImg(imgPath)
+            x = []
+            img = load_image_file(imgPath, size=(224, 224))
+            x.append(np.array(img))
+            x = np.array(x, dtype=np.float16) / 255.0
             with graph.as_default():
-                y_pred = model.predict(img)
+                y_pred = model.predict(x)
             
             pred = list()
             for i in range(len(y_pred)):
                 pred.append(np.argmax(y_pred[i]))
-            r = toPanda(y_pred, pred, image)
+            print(y_pred)
+            print(pred)
+            r = toPanda(y_pred, pred, imgPath)
             res = makeResult(r)
             return res
         else :

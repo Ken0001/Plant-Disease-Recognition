@@ -11,7 +11,7 @@ html, body {
 
 body {
   /*padding: 2rem;*/
-  /*background-image:url("vqkxcqbxr.jpg");*/
+  background-image:url("vqkxcqbxr.jpg");
   background-size: cover;
   background-repeat:no-repeat;
   margin: 0;
@@ -40,7 +40,7 @@ table {
 
 main {
   padding-top: 5rem;
-  height: 80vh;
+  height: 90vh;
 }
 
 .top_title {
@@ -59,16 +59,16 @@ p {
   color: #a7afc2;
 }
 
-.long-picture {
-  max-width: 50% !important;
-}
+/*.long-picture {
+  max-width: 60% !important;
+}*/
 
 .uploader {
   display: block;
   clear: both;
   margin: 0 auto;
-  width: 93%;
-  max-width: 200px;
+  width: 30%;
+  /*wtf*/
 }
 .uploader label {
   float: left;
@@ -126,7 +126,7 @@ p {
 .uploader #file-image {
   display: inline;
   margin: 0 auto .5rem auto;
-  width: auto;
+  width: 60%;
   height: auto;
   max-width: 95%;
 }

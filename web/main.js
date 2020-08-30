@@ -148,7 +148,7 @@ function ekUpload() {
             $("#result").empty();
             $("#result").append(response);
             instances.open();
-
+            
             console.log($("#file-image")[0].height)
             if ($("#file-image")[0].height > $("#file-image")[0].width) { 
               $("#file-image").addClass("long-picture");
