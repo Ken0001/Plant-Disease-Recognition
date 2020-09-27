@@ -1,7 +1,7 @@
 # Model
-from tensorflow.keras.models import Model, Sequential
-from tensorflow.keras.layers import Input, Dense, Conv2D, MaxPooling2D, Dropout, Flatten, MaxPool2D, AvgPool2D, GlobalAvgPool2D, BatchNormalization, Concatenate, Add, ReLU, Activation
-import tensorflow.keras.backend as K
+from keras.models import Model, Sequential
+from keras.layers import Input, Dense, Conv2D, MaxPooling2D, Dropout, Flatten, MaxPool2D, AvgPool2D, GlobalAvgPool2D, BatchNormalization, Concatenate, Add, ReLU, Activation
+import keras.backend as K
 
 
 # DenseNet
@@ -9,30 +9,78 @@ import tensorflow.keras.backend as K
 # 6,12,32,32 - 169
 # 6,12,48,32 - 201
 # 6,12,64,48 - 264
-def densenet(img_shape, n_classes, finalAct='softmax', f = 12):
-    repetitions = 6,12,48,32
-    
+def densenet(img_shape, n_classes, finalAct='softmax', f = 32):
+    repetitions = 6,12,24,16
+
     def bn_rl_conv(x, f, k=1, s=1, p='same'):
-        x = BatchNormalization()(x)
+        x = BatchNormalization(epsilon=1.001e-5)(x)
         x = ReLU()(x)
         x = Conv2D(f, k, strides=s, padding=p)(x)
         return x
     
     def dense_block(tensor, r):
         for _ in range(r):
-        #x = bn_rl_conv(tensor, 4*f)
-            x = bn_rl_conv(tensor, f, 3)
+            x = bn_rl_conv(tensor, 4*f)
+            x = bn_rl_conv(x, f, 3)
             tensor = Concatenate()([tensor, x])
         return tensor
     
     def transition_block(x):
         x = bn_rl_conv(x, K.int_shape(x)[-1] // 2)
+        #x = Dropout(0.2)(x)
+        x = AvgPool2D(2, strides=2, padding='same')(x)
+        return x
+    
+    input = Input(img_shape)
+    
+    x = Conv2D(64, 16, strides=2, padding='same')(input)
+    x = BatchNormalization(epsilon=1.001e-5)(x)
+    x = ReLU()(x)
+    x = MaxPool2D(3, strides=2, padding='same')(x)
+    x = Conv2D(64, 7, strides=2, padding='same')(x)
+    x = BatchNormalization(epsilon=1.001e-5)(x)
+    x = ReLU()(x)
+    x = MaxPool2D(3, strides=2, padding='same')(x)
+    
+    for r in repetitions:
+        d = dense_block(x, r)
+        x = transition_block(d)
+    
+    x = GlobalAvgPool2D()(d)
+    
+    output = Dense(n_classes, activation=finalAct)(x)
+    
+    model = Model(input, output)
+    
+    return model
+
+def densenet264(img_shape, n_classes, finalAct='softmax', f = 32):
+    repetitions = 6,12,48,32
+
+    def bn_rl_conv(x, f, k=1, s=1, p='same'):
+        x = BatchNormalization(epsilon=1.001e-5)(x)
+        x = ReLU()(x)
+        x = Conv2D(f, k, strides=s, padding=p)(x)
+        return x
+    
+    def dense_block(tensor, r):
+        for _ in range(r):
+            x = bn_rl_conv(tensor, 4*f)
+            x = bn_rl_conv(x, f, 3)
+            tensor = Concatenate()([tensor, x])
+        return tensor
+    
+    def transition_block(x):
+        x = bn_rl_conv(x, K.int_shape(x)[-1] // 2)
+        x = Dropout(0.5)(x)
         x = AvgPool2D(2, strides=2, padding='same')(x)
         return x
     
     input = Input(img_shape)
     
     x = Conv2D(64, 7, strides=2, padding='same')(input)
+    x = BatchNormalization(epsilon=1.001e-5)(x)
+    x = ReLU()(x)
     x = MaxPool2D(3, strides=2, padding='same')(x)
     
     for r in repetitions:
@@ -48,7 +96,7 @@ def densenet(img_shape, n_classes, finalAct='softmax', f = 12):
     return model
 
 # Multiple branch based on DenseNet
-def densenet_multi(img_shape, n_classes, finalAct='softmax', f = 12):
+def densenet_ml1(img_shape, n_classes, finalAct='softmax', f = 32):
     # repetitions = 6, 12, 24, 16
     repetitions = 6, 12, 24
     r2 = 16
@@ -61,18 +109,22 @@ def densenet_multi(img_shape, n_classes, finalAct='softmax', f = 12):
     
     def dense_block(tensor, r):
         for _ in range(r):
+            x = bn_rl_conv(tensor, 4*f)
             x = bn_rl_conv(tensor, f, 3)
             tensor = Concatenate()([tensor, x])
         return tensor
     
     def transition_block(x):
         x = bn_rl_conv(x, K.int_shape(x)[-1] // 2)
+        #x = Dropout(0.5)(x)
         x = AvgPool2D(2, strides=2, padding='same')(x)
         return x
     
     input = Input(img_shape)
     
     x = Conv2D(64, 7, strides=2, padding='same')(input)
+    x = BatchNormalization(epsilon=1.001e-5)(x)
+    x = ReLU()(x)
     x = MaxPool2D(3, strides=2, padding='same')(x)
     
     """ Testing
@@ -112,6 +164,191 @@ def densenet_multi(img_shape, n_classes, finalAct='softmax', f = 12):
     
     return model
 
+def densenet_ml2(img_shape, n_classes, finalAct='softmax', f = 32):
+    repetitions = 6,12,24,16
+
+    def bn_rl_conv(x, f, k=1, s=1, p='same'):
+        x = BatchNormalization(epsilon=1.001e-5)(x)
+        x = ReLU()(x)
+        x = Conv2D(f, k, strides=s, padding=p)(x)
+        return x
+    
+    def dense_block(tensor, r):
+        for _ in range(r):
+            x = bn_rl_conv(tensor, 4*f)
+            x = bn_rl_conv(tensor, f, 3)
+            tensor = Concatenate()([tensor, x])
+        return tensor
+    
+    def transition_block(x):
+        x = bn_rl_conv(x, K.int_shape(x)[-1] // 2)
+        #x = Dropout(0.3)(x)
+        x = AvgPool2D(2, strides=2, padding='same')(x)
+        return x
+    
+    input = Input(img_shape)
+    
+    x = Conv2D(64, 7, strides=2, padding='same')(input)
+    x = BatchNormalization(epsilon=1.001e-5)(x)
+    x = ReLU()(x)
+    x = MaxPool2D(3, strides=2, padding='same')(x)
+    
+    for r in repetitions:
+        d = dense_block(x, r)
+        x = transition_block(d)
+    
+    x = GlobalAvgPool2D()(d)
+    
+    outputs = []
+    for i in range(n_classes):
+        print("\rclass ", i, end="")
+        x = Dense(1024, activation='relu')(x)
+        x = Dense(512, activation='relu')(x)
+        x = Dense(256, activation='relu')(x)
+        output = Dense(1, activation=finalAct)(x)
+        outputs.append(output)
+
+    outputs = Concatenate()(outputs)
+    #output = Dense(n_classes, activation=finalAct)(x)
+    
+    model = Model(input, outputs)
+    
+    return model
+
+def densenet_ml3(img_shape, n_classes, finalAct='softmax', f = 32):
+    repetitions = 6,12,24,16
+
+    def bn_rl_conv(x, f, k=1, s=1, p='same'):
+        x = BatchNormalization(epsilon=1.001e-5)(x)
+        x = ReLU()(x)
+        x = Conv2D(f, k, strides=s, padding=p)(x)
+        return x
+    
+    def dense_block(tensor, r):
+        for _ in range(r):
+            x = bn_rl_conv(tensor, 4*f)
+            x = bn_rl_conv(tensor, f, 3)
+            tensor = Concatenate()([tensor, x])
+        return tensor
+    
+    def transition_block(x):
+        x = bn_rl_conv(x, K.int_shape(x)[-1] // 2)
+        #x = Dropout(0.3)(x)
+        x = AvgPool2D(2, strides=2, padding='same')(x)
+        return x
+    
+    input = Input(img_shape)
+    
+    x = Conv2D(64, 7, strides=2, padding='same')(input)
+    x = BatchNormalization(epsilon=1.001e-5)(x)
+    x = ReLU()(x)
+    x = MaxPool2D(3, strides=2, padding='same')(x)
+    
+    for r in repetitions:
+        d = dense_block(x, r)
+        x = transition_block(d)
+    
+    #x = GlobalAvgPool2D()(d)
+    
+    outputs = []
+    for i in range(n_classes):
+        print("\rclass ", i, end="")
+        b = bn_rl_conv(d, f, 3)
+        x = GlobalAvgPool2D()(b)
+        output = Dense(1, activation=finalAct)(x)
+        outputs.append(output)
+
+    outputs = Concatenate()(outputs)
+    #output = Dense(n_classes, activation=finalAct)(x)
+    
+    model = Model(input, outputs)
+    
+    return model
+
+def densenet_ml4(img_shape, n_classes, finalAct='softmax', f = 32):
+    repetitions = 6,12,24#,16
+
+    def bn_rl_conv(x, f, k=1, s=1, p='same'):
+        x = BatchNormalization(epsilon=1.001e-5)(x)
+        x = ReLU()(x)
+        x = Conv2D(f, k, strides=s, padding=p)(x)
+        return x
+    
+    def dense_block(tensor, r):
+        for _ in range(r):
+            x = bn_rl_conv(tensor, 4*f)
+            x = bn_rl_conv(x, f, 3)
+            tensor = Concatenate()([tensor, x])
+        return tensor
+    
+    def transition_block(x):
+        x = bn_rl_conv(x, K.int_shape(x)[-1] // 2)
+        #x = Dropout(0.3)(x)
+        x = AvgPool2D(2, strides=2, padding='same')(x)
+        return x
+    
+    input = Input(img_shape)
+    
+    x = Conv2D(64, 7, strides=2, padding='same')(input)
+    x = BatchNormalization(epsilon=1.001e-5)(x)
+    x = ReLU()(x)
+    x = MaxPool2D(3, strides=2, padding='same')(x)
+    
+    for r in repetitions:
+        d = dense_block(x, r)
+        x = transition_block(d)
+    
+    #x = GlobalAvgPool2D()(d)
+    
+    outputs = []
+    for i in range(n_classes):
+        ### Branches
+        """
+        x = Conv2D(32, 3, strides=2, padding='same')(d)
+        x = BatchNormalization(epsilon=1.001e-5)(x)
+        x = ReLU()(x)
+        x = Conv2D(32, 3, strides=1, padding='same')(x)
+        x = BatchNormalization(epsilon=1.001e-5)(x)
+        x = ReLU()(x)
+        x = Conv2D(32, 3, strides=1, padding='same')(x)
+        x = BatchNormalization(epsilon=1.001e-5)(x)
+        x = ReLU()(x)
+        x = Conv2D(32, 3, strides=1, padding='same')(x)
+        x = BatchNormalization(epsilon=1.001e-5)(x)
+        x = ReLU()(x)
+        x = Conv2D(32, 3, strides=1, padding='same')(x)
+        x = BatchNormalization(epsilon=1.001e-5)(x)
+        x = ReLU()(x)
+        """
+
+        x = bn_rl_conv(d, f*4)
+        x = bn_rl_conv(x, f, 3)
+        x = bn_rl_conv(x, f*4)
+        x = bn_rl_conv(x, f, 3)
+        x = bn_rl_conv(x, f*4)
+        x = bn_rl_conv(x, f, 3)
+        #x = Dropout(0.2)(x)
+        x = bn_rl_conv(x, f*4)
+        x = bn_rl_conv(x, f, 3)
+        x = bn_rl_conv(x, f*4)
+        x = bn_rl_conv(x, f, 3)
+        x = bn_rl_conv(x, f*4)
+        x = bn_rl_conv(x, f, 3)
+        x = bn_rl_conv(x, f*4)
+        x = bn_rl_conv(x, f, 3)
+
+
+        x = GlobalAvgPool2D()(x)
+
+        output = Dense(1, activation=finalAct)(x)
+        outputs.append(output)
+
+    outputs = Concatenate()(outputs)
+    #output = Dense(n_classes, activation=finalAct)(x)
+    
+    model = Model(input, outputs)
+    
+    return model
 
 # CNN
 def cnn(input_shape, num_classes, finalAct="softmax"):
