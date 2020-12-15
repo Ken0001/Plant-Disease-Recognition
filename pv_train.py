@@ -11,7 +11,7 @@ num_class = 39
 final_Act = 'softmax'
 
 
-model = cnn(img_shape, num_class, final_Act)
+model = densenet264(img_shape, num_class, final_Act)
 opt = SGD(lr=0.01, decay=0.0001, momentum=0.9, nesterov=True)
 #model.compile(loss='binary_crossentropy', optimizer=opt, metrics=["accuracy"])
 #opt = Adam(lr=0.001)

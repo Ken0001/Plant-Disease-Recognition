@@ -105,4 +105,5 @@ def read_dataset(loc, aug=False, input_shape=(224,224)):
     x = np.array(image, dtype=np.float16) / 255.0
     y = np.array(labels, dtype=np.float16)
     image, labels = [],[]
+    print(y)
     return x, y

@@ -8,7 +8,8 @@ num_instance={"black":0,
               "mg":0,
               "moth":0,
               "oil":0,
-              "healthy":0}
+              "healthy":0,
+              "background":0}
 dict_name={"b":"black","g":"mg","m":"moth","o":"oil","h":"healthy"}
 
 def mlEncoder(fname):
@@ -20,7 +21,7 @@ def mlEncoder(fname):
         h: healthy
         File name format: bgo_123.jpg
     """
-    label_list = [0,0,0,0]
+    label_list = [0,0,0,0,0]
     dict_label = {"b":0, "g":1, "m":2, "o":3}
     for l in fname.split("_")[0]:
         #print(l)
@@ -37,10 +38,10 @@ def slEncoder(folder):
     """
     if folder=="healthy":
         num_instance["healthy"]+=1
-        label_list = [0,0,0,0]
+        label_list = [0,0,0,0,0]
         return label_list   
-    label_list = [0,0,0,0]
-    dict_label = {"black":0, "mg":1, "moth":2, "oil":3}
+    label_list = [0,0,0,0,0]
+    dict_label = {"black":0, "mg":1, "moth":2, "oil":3, "background":4}
     # Calculate instances
     num_instance[folder]+=1
     label_list[dict_label[folder]]=1

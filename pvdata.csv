@@ -1,0 +1,80 @@
+Apple    Apple_scab
+Apple    Black_rot
+Apple    Cedar_apple_rust
+Apple    healthy
+Background_without_leaves
+Blueberry    healthy
+Cherry    Powdery_mildew
+Cherry    healthy
+Corn    ,Cercospora_leaf_spot Gray_leaf_spot
+Corn    ,Common_rust
+Corn    ,Northern_Leaf_Blight
+Corn    ,healthy
+Grape    ,Black_rot
+Grape    ,Esca_(Black_Measles)
+Grape    ,Leaf_blight_(Isariopsis_Leaf_Spot)
+Grape    ,healthy
+Orange    ,Haunglongbing_(Citrus_greening)
+Peach    ,Bacterial_spot
+Peach    ,healthy
+Pepper,_bellBacterial_spot
+Pepper,_bellhealthy
+Potato    ,Early_blight
+Potato    ,Late_blight
+Potato    ,healthy
+Raspberry   healthy
+Soybean    ,healthy
+Squash    ,Powdery_mildew
+Strawberry  Leaf_scorch
+Strawberry  healthy
+Tomato    ,Bacterial_spot
+Tomato    ,Early_blight
+Tomato    ,Late_blight
+Tomato    ,Leaf_Mold
+Tomato    ,Septoria_leaf_spot
+Tomato    ,Spider_mites Two-spotted_spider_mite
+Tomato    ,Target_Spot
+Tomato    ,Tomato_Yellow_Leaf_Curl_Virus
+Tomato    ,Tomato_mosaic_virus
+Tomato    ,healthy
+
+Class,Species,Disease,Number of training data,Number of validation data,Number of testing data
+Class 1,Apple,Apple_scab,441,63,126
+Class 2,Apple,Black_rot,434,62,124
+Class 3,Apple,Cedar_apple_rust,192,27,55
+Class 4,Apple,healthy,1151,164,329
+Class 5,Blueberry,Cercospora_leaf_spot,1051,150,300
+Class 6,Cherry,Common_rust,736,105,210
+Class 7,Cherry,Northern_Leaf_Blight,597,85,170
+Class 8,Corn,healthy,359,51,102
+Class 9,Corn,Black_rot,834,119,238
+Class 10,Corn,Black_Measles,689,98,197
+Class 11,Corn,Isariopsis_Leaf_Spot,813,116,232
+Class 12,Grape,healthy,826,118,236
+Class 13,Grape,Citrus_greening,968,138,276
+Class 14,Grape,Bacterial_spot,753,107,215
+Class 15,Grape,healthy,296,42,84
+Class 16,Orange,Bacterial_spot,3854,550,1101
+Class 17,Peach,healthy,1607,229,459
+Class 18,Peach,Early_blight,251,36,72
+Class 19,Pepper,Late_blight,697,99,199
+Class 20,Pepper,healthy,1034,147,295
+Class 21,Potato,healthy,700,100,200
+Class 22,Potato,healthy,700,100,200
+Class 23,Potato,Powdery_mildew,106,15,30
+Class 24,Raspberry,Leaf_scorch,259,37,74
+Class 25,Soybean,healthy,3563,509,1018
+Class 26,Squash,Bacterial_spot,1284,183,367
+Class 27,Strawberry,Early_blight,776,110,221
+Class 28,Strawberry,Late_blight,319,45,91
+Class 29,Tomato,Leaf_Mold,1488,212,425
+Class 30,Tomato,Septoria_leaf_spot,700,100,200
+Class 31,Tomato,Two-spotted_spider_mite,1336,190,381
+Class 32,Tomato,Target_Spot,666,95,190
+Class 33,Tomato,Yellow_Leaf_Curl_Virus,1239,177,354
+Class 34,Tomato,Tomato_mosaic_virus,1173,167,335
+Class 35,Tomato,healthy,982,140,280
+Class 36,Tomato,Cercospora_leaf_spot,3749,535,1071
+Class 37,Tomato,Common_rust,261,37,74
+Class 38,Tomato,Northern_Leaf_Blight,1113,159,318
+Class 39,Background_without_leaves,800,114,228
